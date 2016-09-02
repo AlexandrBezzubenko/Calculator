@@ -13,7 +13,7 @@ public class MainActivity extends Activity {
     private TextView screen1; // displays first number
     private TextView screen2; // displays second number
     private TextView screen3; // displays result
-    private String display = "";
+    private String buffer = "";
     private String operation = "";
 
     @Override
@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
         btnClear.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                display = "";
+                buffer = "";
                 operation = "";
                 screen1.setText("");
                 screen2.setText("");
@@ -74,29 +74,29 @@ public class MainActivity extends Activity {
         if (allowEnter()) {
             CharSequence num = ((Button) findViewById(view.getId())).getText();
             if (num.charAt(0) == '.') {
-                if (display.contains(".")) {
+                if (buffer.contains(".")) {
                     return;
                 }
-                if (display.length() == 0 || (display.length() == 1 && display.charAt(0) == '-')) {
-                    display += "0";
+                if (buffer.length() == 0 || (buffer.length() == 1 && buffer.charAt(0) == '-')) {
+                    buffer += "0";
                 }
             }
-            display += num;
-            updateEnteryScreen(display);
+            buffer += num;
+            updateEnteryScreen(buffer);
         }
     }
 
     public void onOperationClick(View view) {
-        if (display.equals("")) {
+        if (buffer.equals("")) {
             if (screen1.getText().length() == 0) {
                 operation = ((Button) findViewById(view.getId())).getText().toString();
                 if (!operation.equals("-")) {
                     operation = "";
                     return;
                 }
-                display = "-";
+                buffer = "-";
                 operation = "";
-                updateEnteryScreen(display);
+                updateEnteryScreen(buffer);
                 return;
             }
             if (screen3.getText().length() != 0) {
@@ -105,18 +105,18 @@ public class MainActivity extends Activity {
                 screen3.setText("");
             }
             operation = ((Button) findViewById(view.getId())).getText().toString();
-            updateEnteryScreen(display);
+            updateEnteryScreen(buffer);
         } else {
             String oldOperation = operation;
             operation = ((Button) findViewById(view.getId())).getText().toString();
             if (screen1.getText().length() == 0) {
-                firstNumber = Double.valueOf(display);
+                firstNumber = Double.valueOf(buffer);
                 updateFirstScreen(screen1, firstNumber);
-                display = "";
-                updateEnteryScreen(display);
+                buffer = "";
+                updateEnteryScreen(buffer);
             } else {
                 firstNumber = Double.valueOf(screen1.getText().toString());
-                secondNumber = Double.valueOf(display.toString());
+                secondNumber = Double.valueOf(buffer.toString());
                 switch (oldOperation) {
                     case "+":
                         firstNumber = sum();
@@ -132,8 +132,8 @@ public class MainActivity extends Activity {
                         break;
                 }
                 updateFirstScreen(screen1, firstNumber);
-                display = "";
-                updateEnteryScreen(display);
+                buffer = "";
+                updateEnteryScreen(buffer);
             }
         }
     }
@@ -142,8 +142,8 @@ public class MainActivity extends Activity {
         if (screen1.getText().length() == 0) {
             return;
         } else if(screen2.getText().length() != 0) {
-            if (!display.isEmpty()) {
-                secondNumber = Double.valueOf(display);
+            if (!buffer.isEmpty()) {
+                secondNumber = Double.valueOf(buffer);
             }
             if(screen3.getText().length() != 0) {
                 firstNumber = result;
@@ -163,23 +163,23 @@ public class MainActivity extends Activity {
                     div();
                     break;
             }
-            display = "";
+            buffer = "";
             updateFirstScreen(screen3, result);
         }
     }
 
     public void onClearClick(View view) {
-        if (display.length() > 0) {
-            display = display.substring(0, display.length() - 1);
-            updateEnteryScreen(display);
+        if (buffer.length() > 0) {
+            buffer = buffer.substring(0, buffer.length() - 1);
+            updateEnteryScreen(buffer);
         } else if (!operation.equals("")) {
             operation = "";
-            updateEnteryScreen(display);
+            updateEnteryScreen(buffer);
         }
     }
 
     private boolean allowEnter() {
-        if(display.isEmpty() && screen1.getText().length() != 0) {
+        if(buffer.isEmpty() && screen1.getText().length() != 0) {
             if(operation == "") {
                 return false;
             }
@@ -187,7 +187,7 @@ public class MainActivity extends Activity {
                 return true;
             }
         }
-        if(display.length() < 12) {
+        if(buffer.length() < 12) {
             return true;
         }else {
 //            char [] ch;
@@ -200,9 +200,9 @@ public class MainActivity extends Activity {
 //                }
 //            }
         }
-//         else if(display.length() < 13) {
+//         else if(buffer.length() < 13) {
 //            for (char ch: ops) {
-//               if (display.charAt(0) == ch) {
+//               if (buffer.charAt(0) == ch) {
 //        }
         return false;
 //                   return true;
