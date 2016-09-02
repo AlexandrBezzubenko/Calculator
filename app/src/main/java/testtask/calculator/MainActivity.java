@@ -185,7 +185,6 @@ public class MainActivity extends Activity {
             }
             else {
                 return true;
-                
             }
         }
         if(display.length() < 12) {
