@@ -1,0 +1,18 @@
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="port_text_size">23.0sp</dimen>
+    <dimen name="port_result_size">46.0sp</dimen>
+    <dimen name="land_text_size">13.0sp</dimen>
+    <dimen name="land_result_size">33.0sp</dimen>
+    <dimen name="port_padding_top">30.0dip</dimen>
+    <dimen name="port_padding_left">10.0dip</dimen>
+    <dimen name="port_padding_right">10.0dip</dimen>
+    <dimen name="port_padding_bottom">10.0dip</dimen>
+    <dimen name="port_display_height">190.0dip</dimen>
+    <dimen name="land_display_height">140.0dip</dimen>
+    <dimen name="button_text_size">36.0sp</dimen>
+    <dimen name="button_operator_size">32.0sp</dimen>
+    <dimen name="keypad_text_size">22.0sp</dimen>
+    <dimen name="keypad_operator_size">18.0sp</dimen>
+</resources>
