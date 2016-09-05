@@ -13,6 +13,7 @@ public class MainActivity extends Activity {
     private TextView screen1; // displays first number
     private TextView screen2; // displays second number
     private TextView screen3; // displays result
+    private Button btnClear;
     private String buffer = "";
     private String operation = "";
 
@@ -25,7 +26,7 @@ public class MainActivity extends Activity {
         screen2 = (TextView) findViewById(R.id.text_field2);
         screen3 = (TextView) findViewById(R.id.result_field);
 
-        Button btnClear = (Button)findViewById(R.id.btn_clear);
+        btnClear = (Button)findViewById(R.id.btn_clear);
         btnClear.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -44,13 +45,22 @@ public class MainActivity extends Activity {
     }
 
     public void updateEnteryScreen(String display) {
+        screen2.setText(operation + format(display));
+    }
+
+    public void updateFirstScreen(TextView screen, double number) {
+        String str = String.valueOf(number);
+        screen.setText(format(str));
+    }
+
+    private String format(String number) {
         String intPart = "";
         String fracPart = "";
-        if (display.contains(".")) {
-            intPart = display.substring(0, display.indexOf('.'));
-            fracPart = display.substring(display.indexOf('.'));
+        if (number.contains(".")) {
+            intPart = number.substring(0, number.indexOf('.'));
+            fracPart = number.substring(number.indexOf('.'));
         } else {
-            intPart = display;
+            intPart = number;
         }
         StringBuilder sb = new StringBuilder(intPart);
         if (intPart.length() > 3) {
@@ -62,13 +72,8 @@ public class MainActivity extends Activity {
         if (intPart.length() > 9) {
             sb.insert(sb.length() - 11, ' ');
         }
-        screen2.setText(sb.append(fracPart).insert(0, operation).toString());
+        return sb.toString() + fracPart;
     }
-
-    public void updateFirstScreen(TextView screen, double number) {
-        screen.setText(String.valueOf(number));
-    }
-
 
     public void onNumberClick(View view) {
         if (allowEnter()) {
@@ -169,10 +174,10 @@ public class MainActivity extends Activity {
     }
 
     public void onClearClick(View view) {
-        if (buffer.length() > 0) {
+        if(buffer.length() > 0) {
             buffer = buffer.substring(0, buffer.length() - 1);
             updateEnteryScreen(buffer);
-        } else if (!operation.equals("")) {
+        } else if(!operation.equals("")) {
             operation = "";
             updateEnteryScreen(buffer);
         }
@@ -180,33 +185,9 @@ public class MainActivity extends Activity {
 
     private boolean allowEnter() {
         if(buffer.isEmpty() && screen1.getText().length() != 0) {
-            if(operation == "") {
-                return false;
-            }
-            else {
-                return true;
-            }
+            return (!operation.isEmpty());
+        } else {
+            return (buffer.length() < 12);
         }
-        if(buffer.length() < 12) {
-            return true;
-        }else {
-//            char [] ch;
-//            ch.
-//            CharSequence cs[] = {"+", "-", "*", "/", "."};
-//            String tmp = buffer;
-//            for (int i = 0; i < 5; i++) {
-//                if(tmp.contains(cs[i])) {
-//                    tmp.
-//                }
-//            }
-        }
-//         else if(buffer.length() < 13) {
-//            for (char ch: ops) {
-//               if (buffer.charAt(0) == ch) {
-//        }
-        return false;
-//                   return true;
-//               }
-//            }
     }
 }

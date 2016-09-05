@@ -65,8 +65,7 @@
                 <Button
                     android:id="@+id/btn_clear"
                     android:text="@string/C"
-                    android:onClick="onClearClick"
-                    style="@style/operation_button_style"/>
+                    style="@style/clear_button_style"/>
 
             </LinearLayout>
 

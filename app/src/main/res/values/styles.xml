@@ -27,6 +27,10 @@
         <item name="android:onClick">"onOperationClick"</item>
     </style>
 
+    <style name="clear_button_style" parent="operation_button_style">
+        <item name="android:onClick">"onClearClick"</item>
+    </style>
+
    <style name="equal_button_style" parent="button_style">
        <item name="android:background">@drawable/eq_btn_bg</item>
        <item name="android:onClick">"onEqualClick"</item>
