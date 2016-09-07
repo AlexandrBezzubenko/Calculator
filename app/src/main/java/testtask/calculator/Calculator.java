@@ -1,28 +1,31 @@
 package testtask.calculator;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Calculator {
 
-    protected static double firstNumber;
-    protected static double secondNumber;
-    protected static double result;
+    protected static BigDecimal firstNumber;
+    protected static BigDecimal secondNumber;
+    protected static BigDecimal result;
 
-    protected static double sum() {
-        result = firstNumber + secondNumber;
+    protected static BigDecimal sum() {
+        result = firstNumber.add(secondNumber);
         return result;
     }
 
-    protected static double sub() {
-        result = firstNumber - secondNumber;
+    protected static BigDecimal sub() {
+        result = firstNumber.subtract(secondNumber);
         return result;
     }
 
-    protected static double mul() {
-        result = firstNumber * secondNumber;
+    protected static BigDecimal mul() {
+        result = firstNumber.multiply(secondNumber);
         return result;
     }
 
-    protected static double div() {
-        result = firstNumber / secondNumber;
+    protected static BigDecimal div() throws ArithmeticException {
+        result = firstNumber.divide(secondNumber, 9, RoundingMode.HALF_UP);
         return result;
     }
 }
