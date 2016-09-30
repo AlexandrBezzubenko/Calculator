@@ -178,7 +178,7 @@ public class MainActivity extends Activity {
     }
 
     private void updateEnteryScreen(String display) {
-        screen2.setText(operation + display); //format
+        screen2.setText(operation + display);
     }
 
     private void updateFirstScreen(TextView screen, BigDecimal number) {
