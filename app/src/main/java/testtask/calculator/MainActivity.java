@@ -14,9 +14,8 @@ import static testtask.calculator.Calculator.*;
 public class MainActivity extends Activity {
 
     private TextView screen1; // displays first number
-    private TextView screen2; // displays second number
+    private TextView screen2; // displays second  (entery screen)
     private TextView screen3; // displays result
-//    private Button btnClear;
     private String buffer = "";
     private String operation = "";
 
@@ -131,7 +130,8 @@ public class MainActivity extends Activity {
     public void onEqualClick(View view) {
         if (screen1.getText().length() == 0) {
             return;
-        } else if(screen2.getText().length() != 0) {
+        }
+        if(screen2.getText().length() != 0) {
             if(!buffer.isEmpty()) {
                 if(buffer.length() == 1 && buffer.charAt(0) == '-') {
                     return;
@@ -178,7 +178,7 @@ public class MainActivity extends Activity {
     }
 
     private void updateEnteryScreen(String display) {
-        screen2.setText(operation + (display)); //format
+        screen2.setText(operation + display); //format
     }
 
     private void updateFirstScreen(TextView screen, BigDecimal number) {
@@ -186,12 +186,36 @@ public class MainActivity extends Activity {
         screen.setText(format(str));
     }
 
+    /**
+     * Returns true if digital input is allowed.
+     * In case the buffer is empty but the first screen is not
+     * - allowed to enter digits after entering the operator.
+     * In other cases, the input is enabled, if the buffer length is not more than 12 characters.
+     */
+    private boolean allowEnter() {
+        if(buffer.isEmpty() && screen1.getText().length() != 0) {
+            return (!operation.isEmpty());
+        } else {
+            return (buffer.length() < 12);
+        }
+    }
+
+    /**
+     * Returns {@code String} object representing formated view of number.
+     * In formated view every three digits are separated by space
+     * and fraction part ends with non-zero digit.
+     * In case integer and fraction parts contain more than 12 symbols,
+     * the fraction part trims to match to 12symbols of total length.
+     * In case the integer part contains more than 12 symbols,
+     * the number appears in format XXX XXX x 10^Y.
+     */
     private String format (String number) {
         String sign = "";
         String intPart = "";
         String fracPart = "";
         String pow = "";
         StringBuilder formated;
+
         if(number.charAt(0) == '-') {
             sign = "-";
             number = number.substring(1);
@@ -216,11 +240,17 @@ public class MainActivity extends Activity {
         return formated.toString();
     }
 
+    /**
+     * Returns {@code String} object representing formated view
+     * of number for display in entery screen.
+     * Unlike {@code format(String)} method formats only integer part of number.
+     */
     private String formatEntery(String number) {
         String sign = "";
         String intPart = "";
         String fracPart = "";
         StringBuilder formated;
+
         if(number.charAt(0) == '-') {
             sign = "-";
             number = number.substring(1);
@@ -231,34 +261,34 @@ public class MainActivity extends Activity {
         } else {
             intPart = number;
         }
+
         formated = formatInt(intPart);
         formated.insert(0,sign).append(fracPart);
         return formated.toString();
     }
 
-
-    private boolean allowEnter() {
-        if(buffer.isEmpty() && screen1.getText().length() != 0) {
-            return (!operation.isEmpty());
-        } else {
-            return (buffer.length() < 12);
-        }
-    }
-
-    private StringBuilder formatInt(String intPart) {
-        StringBuilder formated = new StringBuilder(intPart);
-        if (intPart.length() > 3) {
+    /**
+     * Returns {@code StringBuilder} object representing formated view of integer part of number.
+     * Method separates every three digits by space starting from the end.
+     */
+    private StringBuilder formatInt(String number) {
+        StringBuilder formated = new StringBuilder(number);
+        if (number.length() > 3) {
             formated.insert(formated.length() - 3, ' ');
         }
-        if (intPart.length() > 6) {
+        if (number.length() > 6) {
             formated.insert(formated.length() - 7, ' ');
         }
-        if (intPart.length() > 9) {
+        if (number.length() > 9) {
             formated.insert(formated.length() - 11, ' ');
         }
         return formated;
     }
 
+    /**
+     *  Returns {@code String} object representing formated view of fraction part of number.
+     *  Method delete zeros at the end of fraction part.
+     */
     private String formatFrac(String fracPart) {
         while(fracPart.endsWith("0")) {
             fracPart = fracPart.substring(0,fracPart.length() - 1);
