@@ -47,18 +47,18 @@ public class MainActivity extends Activity {
     }
 
     public void onNumberClick(View view) {
-        if(allowEnter()) {
+        if (allowEnter()) {
             CharSequence num = ((Button)findViewById(view.getId())).getText();
-            if(num.charAt(0) == '.') {
-                if(buffer.contains(".")) {
+            if (num.charAt(0) == '.') {
+                if (buffer.contains(".")) {
                     return;
                 }
-                if(buffer.length() == 0 || (buffer.length() == 1 && buffer.charAt(0) == '-')) {
+                if (buffer.length() == 0 || (buffer.length() == 1 && buffer.charAt(0) == '-')) {
                     buffer += "0";
                 }
             }
             buffer += num;
-            updateEnteryScreen(formatEntery(buffer));
+            updateEnteryScreen(format(buffer, true));
         }
     }
 
@@ -114,11 +114,11 @@ public class MainActivity extends Activity {
                     case "\u00F7": // division symbol
                         try {
                             firstNumber = div();
-                    } catch(ArithmeticException e) {
-                        Toast.makeText(MainActivity.this, "Division ZERO", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    break;
+                        } catch(ArithmeticException e) {
+                            Toast.makeText(MainActivity.this, "Division ZERO", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        break;
                 }
                 updateFirstScreen(screen1, firstNumber);
                 buffer = "";
@@ -168,10 +168,10 @@ public class MainActivity extends Activity {
     }
 
     public void onClearClick(View view) {
-        if(buffer.length() > 0) {
+        if (buffer.length() > 0) {
             buffer = buffer.substring(0, buffer.length() - 1);
             updateEnteryScreen(buffer);
-        } else if(!operation.equals("")) {
+        } else if (!operation.equals("")) {
             operation = "";
             updateEnteryScreen(buffer);
         }
@@ -183,7 +183,7 @@ public class MainActivity extends Activity {
 
     private void updateFirstScreen(TextView screen, BigDecimal number) {
         String str = String.valueOf(number);
-        screen.setText(format(str));
+        screen.setText(format(str, false));
     }
 
     /**
@@ -193,7 +193,7 @@ public class MainActivity extends Activity {
      * In other cases, the input is enabled, if the buffer length is not more than 12 characters.
      */
     private boolean allowEnter() {
-        if(buffer.isEmpty() && screen1.getText().length() != 0) {
+        if (buffer.isEmpty() && screen1.getText().length() != 0) {
             return (!operation.isEmpty());
         } else {
             return (buffer.length() < 12);
@@ -202,34 +202,43 @@ public class MainActivity extends Activity {
 
     /**
      * Returns {@code String} object representing formated view of number.
-     * In formated view every three digits are separated by space
+     * In formated view every three digits of integer part are separated by space
      * and fraction part ends with non-zero digit.
      * In case integer and fraction parts contain more than 12 symbols,
-     * the fraction part trims to match to 12symbols of total length.
+     * the fraction part trims to match to 12 symbols of total length.
      * In case the integer part contains more than 12 symbols,
      * the number appears in format XXX XXX x 10^Y.
+     *
+     * @param number {@code String} representation of formating number
+     *
+     * @param forEnteryScreen true if number formating for entery screen
+     *                        (fraction part not formated)
      */
-    private String format (String number) {
+    private String format (String number, boolean forEnteryScreen) {
         String sign = "";
         String intPart = "";
         String fracPart = "";
         String pow = "";
         StringBuilder formated;
 
-        if(number.charAt(0) == '-') {
+        if (number.charAt(0) == '-') {
             sign = "-";
             number = number.substring(1);
         }
-        if(number.contains(".")) {
+        if (number.contains(".")) {
             intPart = number.substring(0, number.indexOf('.'));
-            fracPart = formatFrac(number.substring(number.indexOf('.')));
+            if (!forEnteryScreen) {
+                fracPart = formatFrac(number.substring(number.indexOf('.')));
+            } else {
+                fracPart = number.substring(number.indexOf('.'));
+            }
         } else {
             intPart = number;
         }
-        if((intPart.length() + fracPart.length()) > 12) {
-            if(intPart.length() > 12) {
-                pow = "×10^" + (intPart.length()-6);
-                intPart = intPart.substring(0,6);
+        if ((intPart.length() + fracPart.length()) > 12) {
+            if (intPart.length() > 12) {
+                pow = "×10^" + (intPart.length() - 6);
+                intPart = intPart.substring(0, 6);
                 fracPart = "";
             } else {
                 fracPart = formatFrac(fracPart.substring(0, 12 - intPart.length()));
@@ -241,35 +250,10 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * Returns {@code String} object representing formated view
-     * of number for display in entery screen.
-     * Unlike {@code format(String)} method formats only integer part of number.
-     */
-    private String formatEntery(String number) {
-        String sign = "";
-        String intPart = "";
-        String fracPart = "";
-        StringBuilder formated;
-
-        if(number.charAt(0) == '-') {
-            sign = "-";
-            number = number.substring(1);
-        }
-        if(number.contains(".")) {
-            intPart = number.substring(0, number.indexOf('.'));
-            fracPart = number.substring(number.indexOf('.'));
-        } else {
-            intPart = number;
-        }
-
-        formated = formatInt(intPart);
-        formated.insert(0,sign).append(fracPart);
-        return formated.toString();
-    }
-
-    /**
      * Returns {@code StringBuilder} object representing formated view of integer part of number.
      * Method separates every three digits by space starting from the end.
+     *
+     * @param number {@code String} representation of formating number
      */
     private StringBuilder formatInt(String number) {
         StringBuilder formated = new StringBuilder(number);
@@ -288,14 +272,17 @@ public class MainActivity extends Activity {
     /**
      *  Returns {@code String} object representing formated view of fraction part of number.
      *  Method delete zeros at the end of fraction part.
+     *
+     * @param fracPart {@code String} representation of fraction part of formating number
      */
     private String formatFrac(String fracPart) {
         while(fracPart.endsWith("0")) {
             fracPart = fracPart.substring(0,fracPart.length() - 1);
         }
-        if(fracPart.endsWith(".")) {
+        if (fracPart.endsWith(".")) {
             fracPart = "";
         }
         return fracPart;
     }
+
 }
