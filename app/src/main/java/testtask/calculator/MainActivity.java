@@ -84,7 +84,7 @@ public class MainActivity extends Activity {
             }
             if(screen3.getText().length() != 0) {
                 firstNumber = result;
-                updateFirstScreen(screen1, firstNumber);
+                updateScreen(screen1, firstNumber);
                 screen3.setText("");
             }
             operation = ((Button) findViewById(view.getId())).getText().toString();
@@ -96,32 +96,14 @@ public class MainActivity extends Activity {
             operation = ((Button) findViewById(view.getId())).getText().toString();
             if (screen1.getText().length() == 0) {
                 firstNumber = new BigDecimal(buffer);
-                updateFirstScreen(screen1, firstNumber);
+                updateScreen(screen1, firstNumber);
                 buffer = "";
                 updateEnteryScreen(buffer);
             } else {
                 secondNumber = new BigDecimal(buffer);
-                switch (oldOperation) {
-                    case "+":
-                        firstNumber = sum();
-                        break;
-                    case "-":
-                        firstNumber = sub();
-                        break;
-                    case "\u00D7": // multiplication symbol
-                        firstNumber = mul();
-                        break;
-                    case "\u00F7": // division symbol
-                        try {
-                            firstNumber = div();
-                        } catch(ArithmeticException e) {
-                            Toast.makeText(MainActivity.this, "Division ZERO", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        break;
-                }
-                updateFirstScreen(screen1, firstNumber);
-                buffer = "";
+                calculate(oldOperation);
+                firstNumber = result;
+                updateScreen(screen1, firstNumber);
                 updateEnteryScreen(buffer);
             }
         }
@@ -141,29 +123,10 @@ public class MainActivity extends Activity {
             }
             if(screen3.getText().length() != 0) {
                 firstNumber = result;
-                updateFirstScreen(screen1, firstNumber);
+                updateScreen(screen1, firstNumber);
             }
-            switch (operation) {
-                case "+":
-                    sum();
-                    break;
-                case "-":
-                    sub();
-                    break;
-                case "\u00D7": // multiplication symbol
-                    mul();
-                    break;
-                case "\u00F7": // division symbol
-                    try {
-                        div();
-                    } catch(ArithmeticException e) {
-                        Toast.makeText(MainActivity.this, "Division ZERO", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    break;
-            }
-            buffer = "";
-            updateFirstScreen(screen3, result);
+            calculate(operation);
+            updateScreen(screen3, result);
         }
     }
 
@@ -181,9 +144,35 @@ public class MainActivity extends Activity {
         screen2.setText(operation + display);
     }
 
-    private void updateFirstScreen(TextView screen, BigDecimal number) {
+    private void updateScreen(TextView screen, BigDecimal number) {
         String str = String.valueOf(number);
         screen.setText(format(str, false));
+    }
+
+    /**
+     * Method calculates the expression and clears the buffer.
+     */
+    private void calculate (String operation) {
+        switch (operation) {
+            case "+":
+                sum();
+                break;
+            case "-":
+                sub();
+                break;
+            case "\u00D7": // multiplication symbol
+                mul();
+                break;
+            case "\u00F7": // division symbol
+                try {
+                    div();
+                } catch(ArithmeticException e) {
+                    Toast.makeText(MainActivity.this, "Division ZERO", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                break;
+        }
+        buffer = "";
     }
 
     /**
